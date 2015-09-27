@@ -574,7 +574,7 @@ def event_2(room): #Intro to battling.
         ps('Who comes here? \nIf you are trying to go to the route,it is crawling with pokémon! \nI will teach you how to battle.')
         battle_intro()
         ec = ec + 1
-    return 
+    return ec
 
 #Global Variables
         
