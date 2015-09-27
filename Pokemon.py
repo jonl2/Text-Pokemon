@@ -569,6 +569,7 @@ def event_2(room): #Intro to battling.
     import time
     global ec
     if room == 'pallet_clearing':
+        print('BITCH')
         ps('You notice an old man!\n')
         time.sleep(1)
         ps('Who comes here? \nIf you are trying to go to the route,it is crawling with pokémon! \nI will teach you how to battle.')
@@ -625,6 +626,7 @@ while endg == 0: #Infinite while for game to run forever! XD
         pokebelt = var1(a,2)
         print(ec)
     if ec == 1:
+        print(ec)
         ec = event_2(room)
 
     
