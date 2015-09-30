@@ -440,6 +440,29 @@ def var1(a,c): #This is to individually take the variables in tuples that were r
     b = a[c]
     return b
 
+def genwildpkmn(name,lvl):
+    stats = pstatgen(name,lvl,'none')
+    return stats
+
+def search(action,room): #Wild pokemon search
+    import random
+    chance = random.randint(1,100)
+    if action == 'search':
+        if room == 'tall_grass1' or 'tall_grass2' or 'tall_grass3' or 'tall_grass4' or 'tall_grass5' or 'tall_grass6' or 'tall_grass7':
+            if chance == 1:
+                ps('A wild Articuno(GET HER) appears!')
+                wldpkmn = 'Articuno'
+            if chance in range(2,50):
+                ps('A wild Pidgey appears!')
+                wldpkmn = 'Pidgey'
+            if chance in range(51,100):
+                ps('A wild Rattata appears!')
+                wldpkmn = 'Rattata'
+            return wldpkmn
+        else:
+            ps('You cannont search for pokémon here!')
+
+#Battle function
 def battle_intro(): #Battle help/intro function
     import time
     global pokebelt
@@ -473,15 +496,10 @@ def battle_intro(): #Battle help/intro function
     hp = var1(tup,0)
     dmg = var1(tup,1)
     time.sleep(2)
-    print('Pidgey has taken ',dmg,"Pidgey's HP is now at:",' ',hp,'.')
+    print('Pidgey has taken ',dmg,"damage, Pidgey's HP is now at:",' ',hp,'.')
     ps("\nThe battle will continue until the opponent's HP hits '0'.")
     time.sleep(1)
-    ps('\nCongratulations on finishing the battle tutorial! Now go out and battle!')
-    
-
-def genwildpkmn(name,lvl):
-    stats = pstatgen(name,lvl,'none')
-    return stats
+    ps('\nCongratulations on finishing the battle tutorial! Now go out and battle!\n')
 
 def damagepI(move,pkmn2stats,pkmn1moves):
     global pokebelt
@@ -506,26 +524,98 @@ def damagepI(move,pkmn2stats,pkmn1moves):
     pkmn1.remove(HP)
     pkmn1.insert(4,hp)
     return (hp,dmg)
-    
-#Events
-def search(action,room): #Wild pokemon search
-    import random
-    chance = random.randint(1,100)
-    if action == 'search':
-        if room == 'tall_grass1' or 'tall_grass2' or 'tall_grass3' or 'tall_grass4' or 'tall_grass5' or 'tall_grass7':
-            if chance == 1:
-                ps('A wild Articuno(GET HER) appears!')
-                wldpkmn = 'Articuno'
-            if chance in range(2,50):
-                ps('A wild Pidgey appears!')
-                wldpkmn = 'Pidgey'
-            if chance in range(51,100):
-                ps('A wild Rattata appears!')
-                wldpkmn = 'Rattata'
-            return wldpkmn
-        else:
-            ps('You cannont search for pokémon here!')
 
+def battle(pkmn2):
+    global pokebelt
+    import time
+    global movesindex
+    global movesdmg
+    global wildmoves
+    global pkmnlmoves
+    pkmn2name = pkmn2.pop(0)
+    pkmn2.insert(0,pkmn2name)
+    pt('A wild ',pkmn2name,' appeared!')
+    pkmn1 = pokebelt.pop(0)
+    pokebelt.insert(0,pkmn1)
+    p1name = pkmn1.pop(0)
+    pkmn1.insert(0,p1name)
+    pt('\nCome out, ',p1name,'! ')
+    time.sleep(2)
+    ps('\nWhat will you do?')
+    HP1 and HP = 100
+    while HP1 != 0 or HP != 0:  
+        ps('ATTACK, BAG, RUN, SWITCH')
+        action = input(': ')
+        if action == 'attack' or 'Attack' or 'ATTACK':  #pkmn_name,atk,Def,spd,hp,exp,lvl,ID
+            ps(plmoves)
+            move = input(': ')
+            atk1 = pkmn1.pop(1)
+            pkmn1.insert(1,atk1)
+            HP1 = pkmn1.pop(4)
+            pkmn1.insert(4,HP1)
+            if move in p1moves:
+                print('Use ',move1,' ',p1name,'!')
+                cmd = movesindex.index(move)
+                atkdmg = movesdmg.pop(cmd)
+                movesdmg.insert(cmd,atk1)
+                def1 = pkmn2stats.pop(2)
+                pkmn2stats.insert(2,def1)
+                dmg = int((atk1/def1)*atkdmg)
+                hp = HP - dmg
+                pkmn1.remove(HP)
+                pkmn1.insert(4,hp)
+                print(pkmn2name,' has taken ',dmg,' amount of damage. Pidgey is now at: ',hp,'.')
+                move = random(1)
+                if pkmn2name == 'Pidgey' or 'Rattata':
+                    if move in range(1,50):
+                        cmd = 0
+                    if move in range(51,100):
+                        cmd = 1
+                if pkmn2name == 'Articuno':
+                    ps('You stare in awe at the LEGENDARY pokemon.../nIt soon leaves...')
+                    break
+                    return
+                move = wildmoves.pop(cmd)
+                wildmoves.insert(cmd,move)
+                atkdmg = movesdmg.pop(cmd)
+                movesdmg.insert(cmd,atkdmg)
+                print(pkmn2name,' used ',move,'!')
+                def1 = pkmn1.pop(2)
+                pkmn1.insert(2,def1)
+                atk1 = pkmn2.pop(1)
+                pkmn2.insert(1,atk1)
+                dmg = int((atk1/def1)*atkdmg)
+                hp = HP - dmg
+                pkmn1.remove(HP)
+                pkmn1.insert(4,hp)
+                print(p1name,' has taken ',dmg,' amount of damage.',p1name,' is now at: ',hp,'.')
+                
+            
+            
+#Events
+        
+
+def wildpkmn(action,room,lvl):
+    if room == 'tall_grass1' or room == 'tall_grass2' or room == 'tall_grass3' or room == 'tall_grass4' or room == 'tall_grass5' or room == 'tall_grass6' or room == 'tall_grass7':
+        action = 'search'
+        if room == 'tall_grass1':
+            lvl = 5
+        if room == 'tall_grass2':
+            lvl = 7
+        if room == 'tall_grass3':
+            lvl = 8
+        if room == 'tall_grass4':
+            lvl = 10
+        if room == 'tall_grass5':
+            lvl = 12
+        if room == 'tall_grass6':
+            lvl = 14
+        if room == 'tall_grass7':
+            lvl = 15
+        pkmn2name = search(action,room)
+        pkmn2 = genwildpkmn(pkmn2name,lvl)
+        battle(pkmn2)
+    
 
 def event_1(room,pokebelt): #Prof Oak Event.
     import time
@@ -569,10 +659,9 @@ def event_2(room): #Intro to battling.
     import time
     global ec
     if room == 'pallet_clearing':
-        print('BITCH')
         ps('You notice an old man!\n')
         time.sleep(1)
-        ps('Who comes here? \nIf you are trying to go to the route,it is crawling with pokémon! \nI will teach you how to battle.')
+        ps('Who comes here? \nIf you are trying to go to the route, it is crawling with pokémon! \nI will teach you how to battle.')
         battle_intro()
         ec = ec + 1
     return ec
@@ -587,8 +676,10 @@ b = 0
 
 pokebelt = [] #This is party pokemon and stats for em.
 pkmn1moves = ['Scratch','Tackle']
-movesindex = ['Scratch']
-movesdmg = [15]
+wildmoves = ['Scratch','Tackle']
+movesindex = ['Scratch','Takle']
+movesdmg = [15,15]
+bag = []
 #Script
 
 endg = 1
@@ -615,7 +706,7 @@ while endg == 0: #Infinite while for game to run forever! XD
     room = Room(room,drc)
     times = Time(times,cside)
     CTime(times,action,cside)
-    search(action,room)
+    wildpkmn(action,room,b)
     if action == 'help' or action == 'Help':
         Help()
     if ec == 0:
@@ -624,9 +715,7 @@ while endg == 0: #Infinite while for game to run forever! XD
         choice = var1(a,0)
         room = var1(a,1)
         pokebelt = var1(a,2)
-        print(ec)
     if ec == 1:
-        print(ec)
         ec = event_2(room)
 
     
