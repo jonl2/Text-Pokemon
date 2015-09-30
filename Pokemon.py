@@ -13,12 +13,6 @@ import random
 
 
 #Functions
-def random(a): # %chance out of 100. Useful for many parts of the code.
-    if a == 1:
-        b = random.randint(1,100)
-    if a == 2:
-        b = random.randint(1,100000)
-    return b
     
 def Move(action,condi,room): #Room function pt1 ( I was too lazy to do a matrix for the code... :D )
     if room == "Clearing": #Each room has individual name.
@@ -526,12 +520,15 @@ def damagepI(move,pkmn2stats,pkmn1moves):
     return (hp,dmg)
 
 def battle(pkmn2):
-    global pokebelt
+    import random
     import time
+    global pokebelt
     global movesindex
     global movesdmg
     global wildmoves
-    global pkmnlmoves
+    global pkmn1moves
+    global bag
+    a = pkmn1moves
     pkmn2name = pkmn2.pop(0)
     pkmn2.insert(0,pkmn2name)
     pt('A wild ',pkmn2name,' appeared!')
@@ -542,39 +539,34 @@ def battle(pkmn2):
     pt('\nCome out, ',p1name,'! ')
     time.sleep(2)
     ps('\nWhat will you do?')
-    HP1 and HP = 100
+    HP1 = HP = 100
     while HP1 != 0 or HP != 0:  
         ps('ATTACK, BAG, RUN, SWITCH')
         action = input(': ')
         if action == 'attack' or 'Attack' or 'ATTACK':  #pkmn_name,atk,Def,spd,hp,exp,lvl,ID
-            ps(plmoves)
-            move = input(': ')
+            print(a)
+            move1 = input(': ')
             atk1 = pkmn1.pop(1)
             pkmn1.insert(1,atk1)
             HP1 = pkmn1.pop(4)
-            pkmn1.insert(4,HP1)
-            if move in p1moves:
+            if move1 in a:
                 print('Use ',move1,' ',p1name,'!')
-                cmd = movesindex.index(move)
+                cmd = movesindex.index(move1)
                 atkdmg = movesdmg.pop(cmd)
                 movesdmg.insert(cmd,atk1)
-                def1 = pkmn2stats.pop(2)
-                pkmn2stats.insert(2,def1)
+                def1 = pkmn2.pop(2)
+                pkmn2.insert(2,def1)
                 dmg = int((atk1/def1)*atkdmg)
                 hp = HP - dmg
-                pkmn1.remove(HP)
-                pkmn1.insert(4,hp)
+                pkmn2.pop(4)
+                pkmn2.insert(4,hp)
                 print(pkmn2name,' has taken ',dmg,' amount of damage. Pidgey is now at: ',hp,'.')
-                move = random(1)
+                move = random.randint(1,100)
                 if pkmn2name == 'Pidgey' or 'Rattata':
                     if move in range(1,50):
                         cmd = 0
                     if move in range(51,100):
                         cmd = 1
-                if pkmn2name == 'Articuno':
-                    ps('You stare in awe at the LEGENDARY pokemon.../nIt soon leaves...')
-                    break
-                    return
                 move = wildmoves.pop(cmd)
                 wildmoves.insert(cmd,move)
                 atkdmg = movesdmg.pop(cmd)
@@ -586,10 +578,9 @@ def battle(pkmn2):
                 pkmn2.insert(1,atk1)
                 dmg = int((atk1/def1)*atkdmg)
                 hp = HP - dmg
-                pkmn1.remove(HP)
                 pkmn1.insert(4,hp)
                 print(p1name,' has taken ',dmg,' amount of damage.',p1name,' is now at: ',hp,'.')
-                
+    print('Hi')
             
             
 #Events
@@ -679,7 +670,9 @@ pkmn1moves = ['Scratch','Tackle']
 wildmoves = ['Scratch','Tackle']
 movesindex = ['Scratch','Takle']
 movesdmg = [15,15]
-bag = []
+#Pokeball, Greatball, Ultraball, MasterBall
+bag = [[5,0,0,0],[]]
+
 #Script
 
 endg = 1
