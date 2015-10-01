@@ -391,17 +391,17 @@ def ps(str): #slow typing for single strs.
         print (letter, end='')
         time.sleep(delay)
 
-def pt(str,str1,str2): #This is slow typing for triples of strs.
-    for letter in str:
+def pt(str1,str2,str3):
+    for letter in str1:
         print(letter, end='')
         time.sleep(delay)
-    for letter1 in str1:
+    for letter1 in str2:
         print(letter1, end='')
         time.sleep(delay)
-    for letter2 in str2:
+    for letter2 in str3:
         print(letter2, end='')
         time.sleep(delay)
-
+        
 def pstatgen(pkmn_name,lvl,ID): #This generates the stats necessary for the game.
     import random
     global pokebelt
@@ -420,15 +420,35 @@ def pnaming(pkm1): #For nicknames
     pt('Congratulations on obtaining ', pkm1,'!\n')
     return pkm1
 
-def p2belt(stats,name,pokebelt): #adds pokemon to the trainer party
-    pt('Which place will you put ',name,' (1-6th position)\n')
-    ps('WARNING: if there is already a pokemon there, the code WILL replace it.\n')
-    print(pokebelt)
-    spot = int(input('Enter integer number here: '))
-    spot = 0
-    pokebelt.insert(spot,stats)
-    print(pokebelt)
-    return pokebelt
+def pstatgen(pkmn_name,lvl,ID): #This generates the stats necessary for the game.
+    import random
+    global pokebelt
+    atk = random.randint(10,15)
+    Def = random.randint(10,15)
+    spd = random.randint(10,15)
+    hp = random.randint(50,60)
+    exp = 0
+    string = (pkmn_name,atk,Def,spd,hp,exp,lvl,ID)
+    return string
+
+#Classes
+class Create_Pokemon(object):
+    Type = 'none'
+    def __init__(self,name,attack,defense,speed,HP,exp,level,ID):
+        self.name = name
+        self.attack = attack
+        self.defense = defense
+        self.speed = speed
+        self.HP = HP
+        self.exp = exp
+        self.level = level
+        self.ID = ID
+    def Fire_type(self):
+        self.Type = 'fire'
+    def Water_type(self):
+        self.Type = 'water'
+    def Grass_type(self):
+        self.Type = 'grass'
 
 def var1(a,c): #This is to individually take the variables in tuples that were return generated
     b = a[c]
@@ -436,7 +456,8 @@ def var1(a,c): #This is to individually take the variables in tuples that were r
 
 def genwildpkmn(name,lvl):
     stats = pstatgen(name,lvl,'none')
-    return stats
+    pkmn = Create_Pokemon(stats[0],stats[1],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7])
+    return pkmn
 
 def search(action,room): #Wild pokemon search
     import random
@@ -468,9 +489,7 @@ def battle_intro(): #Battle help/intro function
     time.sleep(1)
     pkmn1 = pokebelt.pop(0)
     pokebelt.insert(0,pkmn1)
-    p1name = pkmn1.pop(0)
-    pkmn1.insert(0,p1name)
-    pt('\nCome out, ',p1name,'! ')
+    pt('\nCome out, ',pkmn1.name,'! ')
     pkmn2 = genwildpkmn('Pidgey',5)
     pkmn2moves = ['Scratch']
     time.sleep(1)
@@ -485,38 +504,29 @@ def battle_intro(): #Battle help/intro function
     time.sleep(1)
     move1 = pkmn1moves.pop(0)
     pkmn1moves.insert(0,move1)
-    print('Use ',move1,' ',p1name,'!')
+    print('Use ',move1,' ',pkmn1.name,'!')
     tup = damagepI(move1,pkmn2,pkmn1moves)
-    hp = var1(tup,0)
-    dmg = var1(tup,1)
+    hp = tup[0]
+    dmg = tup[1]
     time.sleep(2)
     print('Pidgey has taken ',dmg,"damage, Pidgey's HP is now at:",' ',hp,'.')
     ps("\nThe battle will continue until the opponent's HP hits '0'.")
     time.sleep(1)
     ps('\nCongratulations on finishing the battle tutorial! Now go out and battle!\n')
 
-def damagepI(move,pkmn2stats,pkmn1moves):
+def damagepI(move,pkmn2,pkmn1moves):
     global pokebelt
     global movesindex
     global movesdmg
     pkmn1 = pokebelt.pop(0)
     pokebelt.insert(0,pkmn1)
-    p1name = pkmn1.pop(0)
-    pkmn1.insert(0,p1name)
-    atk1 = pkmn1.pop(1)
-    pkmn1.insert(1,atk1)
-    HP = pkmn1.pop(4)
-    pkmn1.insert(4,HP)
+    p1name = pkmn1.name
     if move in pkmn1moves:
         cmd = movesindex.index(move)
         atkdmg = movesdmg.pop(cmd)
-        movesdmg.insert(cmd,atk1)
-    def1 = pkmn2stats.pop(2)
-    pkmn2stats.insert(2,def1)
-    dmg = int((atk1/def1)*atkdmg)
-    hp = HP - dmg
-    pkmn1.remove(HP)
-    pkmn1.insert(4,hp)
+        movesdmg.insert(cmd,atkdmg)
+    dmg = int((pkmn1.attack/pkmn1.defense)*atkdmg)
+    hp = pkmn2.HP - dmg
     return (hp,dmg)
 
 def battle(pkmn2):
@@ -640,11 +650,12 @@ def event_1(room,pokebelt): #Prof Oak Event.
             ID = 1
         lvl = 5
         pkm1 = pnaming(pkm1)
-        pkmn1 = pstatgen(pkm1,lvl,ID)
-        pokebelt = p2belt(pkmn1,pkm1,pokebelt)
+        stats = pstatgen(pkm1,lvl,ID)
+        pkm1 = Create_Pokemon(stats[0],stats[1],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7])
+        pokebelt.append(pkm1)
         print("\nYou are now in Professor Oak's Lab.\n")
         ps('To complete the game, navigate the route, find the next city,\n and defeat the gym leader that is way stronger than you! :D\n')
-        return (choice,room,pokebelt)
+        return (room,pokebelt)
 
 def event_2(room): #Intro to battling.
     import time
@@ -705,9 +716,8 @@ while endg == 0: #Infinite while for game to run forever! XD
     if ec == 0:
         ec = ec + 1
         a = event_1(room,pokebelt)
-        choice = var1(a,0)
-        room = var1(a,1)
-        pokebelt = var1(a,2)
+        room = a[0]
+        pokebelt = a[1]
     if ec == 1:
         ec = event_2(room)
 
